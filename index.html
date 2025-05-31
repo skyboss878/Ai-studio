@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Creators Studio</title>
+  <link rel="stylesheet" href="/static/styles.css"/>
+</head>
+<body>
+  <nav>
+    <div class="nav-content">
+      <a href="#" class="logo">AI Creators Studio</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#" onclick="showLogin()">Login</a>
+      </div>
+      <a href="#" class="cta-button" onclick="showSignup()">Start Free Trial</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Go Viral Instantly with AI</h1>
+    <p>AI-generated videos, music, and captions for TikTok, Reels, Shorts</p>
+    <div class="hero-buttons">
+      <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <h2>Subscription</h2>
+    <div id="paypal-button-container"></div>
+  </section>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+  <script>
+    paypal.Buttons({
+      style: {
+        shape: 'rect',
+        color: 'gold',
+        layout: 'vertical',
+        label: 'subscribe'
+      },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({
+          plan_id: 'P-21953009BF716710YNA5GAIA'
+        });
+      },
+      onApprove: function(data, actions) {
+        fetch('/subscription/activate', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          }
+        }).then(() => alert("Subscription activated!"));
+      }
+    }).render('#paypal-button-container');
+  </script>
+</body>
+</html>
