@@ -6,6 +6,11 @@ import os
 import datetime
 
 app = Flask(__name__)
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ Welcome to AI Creators Studio API!"
+
+
 CORS(app)
 app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['JWT_SECRET_KEY'] = 'your-jwt-secret-key'
@@ -21,9 +26,12 @@ class User(db.Model):
     trial_start = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     subscribed = db.Column(db.Boolean, default=False)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
+@app.before_request
+def before_request():
+    if not hasattr(app, 'tables_created'):
+        db.create_all()
+
+        app.tables_created = True
 
 @app.route('/signup', methods=['POST'])
 def signup():

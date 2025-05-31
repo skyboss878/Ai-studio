@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Creators Studio</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+  <h1>Welcome to AI Creators Studio</h1>
+  <p>Create viral videos powered by AI</p>
+
+  <!-- Video Generation Form -->
+  <form id="ai-form">
+    <input type="text" id="prompt" placeholder="Enter your idea..." required />
+    <button type="submit">Generate Video</button>
+  </form>
+
+  <div id="result"></div>
+
+  <!-- PayPal Subscription Button -->
+  <h2>Subscribe for Full Access ($18/month)</h2>
+  <div id="paypal-button-container"></div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription"></script>
+  <script>
+    paypal.Buttons({
+      style: {
+        shape: 'rect',
+        color: 'gold',
+        layout: 'vertical',
+        label: 'subscribe'
+      },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({
+          plan_id: 'P-8DP70117TD556851YNA33XXA' // Your real plan ID
+        });
+      },
+      onApprove: function(data, actions) {
+        alert("Subscribed! ID: " + data.subscriptionID);
+        // Send subscriptionID to backend here if needed
+      }
+    }).render('#paypal-button-container');
+  </script>
+
+  <!-- AI Video Form Handler -->
+  <script>
+    document.getElementById("ai-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const prompt = document.getElementById("prompt").value;
+      document.getElementById("result").innerText = "Generating...";
+
+      try {
+        const res = await fetch("/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("result").innerHTML =
+            "<video controls src='" + data.video_url + "' width='300'></video>";
+        } else {
+          document.getElementById("result").innerText = "Failed: " + data.message;
+        }
+      } catch (err) {
+        document.getElementById("result").innerText = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
