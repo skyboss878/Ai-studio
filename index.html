@@ -2,36 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Creators Studio</title>
-  <link rel="stylesheet" href="/static/styles.css"/>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #141E30, #243B55);
+      color: #fff;
+    }
+
+    nav {
+      background: #111;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #FFD700;
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      margin: 0 1rem;
+      color: white;
+      text-decoration: none;
+    }
+
+    .cta-button {
+      background: #FFD700;
+      padding: 0.5rem 1rem;
+      color: black;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin: 1rem 0;
+    }
+
+    .primary-cta {
+      background: #FFD700;
+      color: black;
+      padding: 1rem 2rem;
+      font-weight: bold;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #222;
+      padding: 2rem;
+      border-radius: 10px;
+    }
+
+    input {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      width: 100%;
+    }
+
+    #pricing {
+      text-align: center;
+      margin-top: 4rem;
+    }
+  </style>
 </head>
 <body>
   <nav>
-    <div class="nav-content">
-      <a href="#" class="logo">AI Creators Studio</a>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#" onclick="showLogin()">Login</a>
-      </div>
-      <a href="#" class="cta-button" onclick="showSignup()">Start Free Trial</a>
+    <a href="#" class="logo">AI Creators Studio</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" onclick="showLogin()">Login</a>
     </div>
+    <a href="#" class="cta-button" onclick="showSignup()">Start Free</a>
   </nav>
 
   <section class="hero">
     <h1>Go Viral Instantly with AI</h1>
-    <p>AI-generated videos, music, and captions for TikTok, Reels, Shorts</p>
-    <div class="hero-buttons">
-      <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
-    </div>
+    <p>Generate viral TikToks, Reels, and Shorts with captions, music, and auto-upload.</p>
+    <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
   </section>
 
   <section id="pricing">
-    <h2>Subscription</h2>
+    <h2>Subscribe Now - $18/month</h2>
     <div id="paypal-button-container"></div>
   </section>
 
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <h2>Sign Up</h2>
+      <input type="email" id="signupEmail" placeholder="Email" />
+      <input type="password" id="signupPassword" placeholder="Password" />
+      <button onclick="signup()">Sign Up</button>
+      <p><a href="#" onclick="showLogin()">Already have an account? Login</a></p>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>Log In</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="login()">Log In</button>
+      <p><a href="#" onclick="showSignup()">Don’t have an account? Sign up</a></p>
+    </div>
+  </div>
+
+  <!-- PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
   <script>
     paypal.Buttons({
@@ -41,21 +151,105 @@
         layout: 'vertical',
         label: 'subscribe'
       },
-      createSubscription: function(data, actions) {
+      createSubscription: function (data, actions) {
         return actions.subscription.create({
-          plan_id: 'P-21953009BF716710YNA5GAIA'
+          plan_id: 'P-8DP70117TD556851YNA33XXA' // Your PayPal Plan ID
         });
       },
-      onApprove: function(data, actions) {
-        fetch('/subscription/activate', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            'Content-Type': 'application/json'
-          }
-        }).then(() => alert("Subscription activated!"));
+      onApprove: function (data, actions) {
+        alert('Subscription successful! ID: ' + data.subscriptionID);
+        // Send subscriptionID to backend here if needed
       }
     }).render('#paypal-button-container');
   </script>
+
+  <!-- App Logic -->
+  <script>
+    const BACKEND_URL = 'https://ai-studio-backend.onrender.com'; // Your backend URL
+
+    function showSignup() {
+      document.getElementById('signupModal').style.display = 'flex';
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function showLogin() {
+      document.getElementById('loginModal').style.display = 'flex';
+      document.getElementById('signupModal').style.display = 'none';
+    }
+
+    function closeModals() {
+      document.getElementById('signupModal').style.display = 'none';
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    async function signup() {
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value.trim();
+
+      if (!email || !password) return alert('Please enter both fields');
+
+      const res = await fetch(`${BACKEND_URL}/api/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert('Signup successful! Now log in.');
+        closeModals();
+        showLogin();
+      } else {
+        alert(data.message || 'Signup failed');
+      }
+    }
+
+    async function login() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      if (!email || !password) return alert('Please enter both fields');
+
+      const res = await fetch(`${BACKEND_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('token', data.token);
+        alert('Login successful!');
+        closeModals();
+      } else {
+        alert(data.message || 'Login failed');
+      }
+    }
+
+    // Hide modals on outside click
+    window.onclick = function (e) {
+      if (e.target.classList.contains('modal')) closeModals();
+    };
+  </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
