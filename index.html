@@ -1,219 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Creators Studio</title>
-  <link rel="stylesheet" href="static/styles.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0e0e0e;
-      color: #fff;
-    }
-
-    nav {
-      background: #1a1a1a;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #00ffe7;
-      text-decoration: none;
-    }
-
-    .nav-links a {
-      margin-left: 1rem;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .cta-button {
-      background: #00ffe7;
-      color: #000;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-      margin-left: 1rem;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 4rem 1rem;
-    }
-
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: #ccc;
-    }
-
-    .primary-cta {
-      padding: 1rem 2rem;
-      background: #00ffe7;
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 8px;
-    }
-
-    #pricing {
-      padding: 2rem;
-      text-align: center;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background: #1a1a1a;
-      color: #aaa;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Creators Studio</title>
+<style>
+  body {
+    margin: 0; background: #121212; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  header {
+    background: #222; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 {
+    color: #00ffe7;
+    margin: 0;
+    font-weight: 900;
+  }
+  nav button {
+    background: #00ffe7; color: #000; border: none; padding: 0.5rem 1rem; margin-left: 1rem; cursor: pointer;
+    border-radius: 20px; font-weight: 700; font-size: 1rem;
+  }
+  main {
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  #prompt {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+  }
+  button#generate {
+    background: #00ffe7;
+    color: #000;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  #results {
+    margin-top: 2rem;
+  }
+  #results h2 {
+    color: #00ffe7;
+  }
+  #video {
+    max-width: 100%;
+    margin-top: 1rem;
+  }
+  #hashtags {
+    margin-top: 1rem;
+    font-weight: 700;
+  }
+  /* Modal styles */
+  .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 10; 
+    left: 0; top: 0; width: 100%; height: 100%;
+    overflow: auto; background-color: rgba(0,0,0,0.7);
+  }
+  .modal-content {
+    background-color: #222; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 400px;
+    border-radius: 10px; color: white;
+  }
+  .modal-content input {
+    width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 6px; border: none; font-size: 1rem;
+  }
+  .modal-content button {
+    background: #00ffe7; color: #000; border: none; padding: 0.7rem 1.5rem; border-radius: 25px; font-weight: 700; cursor: pointer;
+  }
+  .close {
+    float: right; font-size: 1.5rem; cursor: pointer; font-weight: bold; color: #00ffe7;
+  }
+  #user-email {
+    font-weight: 700; margin-left: 1rem; color: #00ffe7;
+  }
+</style>
 </head>
 <body>
+
+<header>
+  <h1>AI Creators Studio</h1>
   <nav>
-    <a href="#" class="logo">AI Creators Studio</a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#" onclick="showLogin()">Login</a>
-      <a href="#" class="cta-button" onclick="showSignup()">Start Free</a>
-    </div>
+    <span id="user-email"></span>
+    <button id="btn-login">Login</button>
+    <button id="btn-signup">Sign Up</button>
+    <button id="btn-logout" style="display:none;">Logout</button>
   </nav>
+</header>
 
-  <section class="hero">
-    <h1>Go Viral Instantly with AI</h1>
-    <p>Create viral short videos, captions, and music for TikTok, Reels, and Shorts — automatically</p>
-    <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
-  </section>
+<main>
+  <textarea id="prompt" rows="4" placeholder="Enter your video idea or prompt..."></textarea>
+  <button id="generate" disabled>Generate Viral Video</button>
+  <div id="results"></div>
 
-  <section id="pricing">
-    <h2>Subscribe for Full Access</h2>
-    <div id="paypal-button-container"></div>
-  </section>
+  <div id="paypal-button-container" style="margin-top: 2rem;"></div>
+</main>
 
-  <footer>
-    &copy; 2025 AI Creators Studio
-  </footer>
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="login-close">&times;</span>
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-submit">Login</button>
+    <p id="login-error" style="color:red;"></p>
+  </div>
+</div>
 
-  <!-- PayPal Integration -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription"></script>
-  <script>
+<!-- Signup Modal -->
+<div id="signup-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="signup-close">&times;</span>
+    <h2>Sign Up</h2>
+    <input type="email" id="signup-email" placeholder="Email" />
+    <input type="password" id="signup-password" placeholder="Password" />
+    <button id="signup-submit">Sign Up</button>
+    <p id="signup-error" style="color:red;"></p>
+  </div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&vault=true&intent=subscription"></script>
+<script>
+  const apiBase = 'http://127.0.0.1:5000'; // Change to your backend URL if deployed
+  let accessToken = localStorage.getItem('access_token') || null;
+  let userEmail = localStorage.getItem('user_email') || null;
+  let isSubscribed = false;
+
+  // Elements
+  const btnLogin = document.getElementById('btn-login');
+  const btnSignup = document.getElementById('btn-signup');
+  const btnLogout = document.getElementById('btn-logout');
+  const userEmailSpan = document.getElementById('user-email');
+
+  const loginModal = document.getElementById('login-modal');
+  const signupModal = document.getElementById('signup-modal');
+
+  const loginClose = document.getElementById('login-close');
+  const signupClose = document.getElementById('signup-close');
+
+  const loginSubmit = document.getElementById('login-submit');
+  const signupSubmit = document.getElementById('signup-submit');
+
+  const loginEmail = document.getElementById('login-email');
+  const loginPassword = document.getElementById('login-password');
+  const signupEmail = document.getElementById('signup-email');
+  const signupPassword = document.getElementById('signup-password');
+
+  const loginError = document.getElementById('login-error');
+  const signupError = document.getElementById('signup-error');
+
+  const promptInput = document.getElementById('prompt');
+  const generateBtn = document.getElementById('generate');
+  const resultsDiv = document.getElementById('results');
+
+  // Utility functions
+  function showModal(modal) {
+    modal.style.display = 'block';
+  }
+  function hideModal(modal) {
+    modal.style.display = 'none';
+  }
+
+  function updateUI() {
+    if (accessToken) {
+      btnLogin.style.display = 'none';
+      btnSignup.style.display = 'none';
+      btnLogout.style.display = 'inline-block';
+      userEmailSpan.textContent = userEmail || '';
+      generateBtn.disabled = false;
+      renderPayPalButton();
+      checkSubscription();
+    } else {
+      btnLogin.style.display = 'inline-block';
+      btnSignup.style.display = 'inline-block';
+      btnLogout.style.display = 'none';
+      userEmailSpan.textContent = '';
+      generateBtn.disabled = true;
+      resultsDiv.innerHTML = '';
+      document.getElementById('paypal-button-container').innerHTML = '';
+      isSubscribed = false;
+    }
+  }
+
+  // Signup logic
+  btnSignup.addEventListener('click', () => {
+    signupError.textContent = '';
+    signupEmail.value = '';
+    signupPassword.value = '';
+    showModal(signupModal);
+  });
+
+  signupClose.addEventListener('click', () => hideModal(signupModal));
+
+  signupSubmit.addEventListener('click', async () => {
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value.trim();
+    if (!email || !password) {
+      signupError.textContent = 'Please enter email and password.';
+      return;
+    }
+    try {
+      const res = await fetch(`${apiBase}/signup`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({email, password})
+      });
+      const data = await res.json();
+      if (res.ok) {
+        accessToken = data.access_token;
+        userEmail = email;
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('user_email', userEmail);
+        hideModal(signupModal);
+        updateUI();
+        alert('Signup successful! Please subscribe to enable video generation.');
+      } else {
+        signupError.textContent = data.error || 'Signup failed';
+      }
+    } catch (e) {
+      signupError.textContent = 'Signup failed, try again.';
+    }
+  });
+
+  // Login logic
+  btnLogin.addEventListener('click', () => {
+    loginError.textContent = '';
+    loginEmail.value = '';
+    loginPassword.value = '';
+    showModal(loginModal);
+  });
+
+  loginClose.addEventListener('click', () => hideModal(loginModal));
+
+  loginSubmit.addEventListener('click', async () => {
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+    if (!email || !password) {
+      loginError.textContent = 'Please enter email and password.';
+      return;
+    }
+<script>
+  // Continuing loginSubmit listener
+  loginSubmit.addEventListener('click', async () => {
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+    if (!email || !password) {
+      loginError.textContent = 'Please enter email and password.';
+      return;
+    }
+    try {
+      const res = await fetch(`${apiBase}/login`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({email, password})
+      });
+      const data = await res.json();
+      if (res.ok) {
+        accessToken = data.access_token;
+        userEmail = email;
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('user_email', userEmail);
+        hideModal(loginModal);
+        updateUI();
+      } else {
+        loginError.textContent = data.error || 'Login failed';
+      }
+    } catch (e) {
+      loginError.textContent = 'Login failed, try again.';
+    }
+  });
+
+  // Logout
+  btnLogout.addEventListener('click', () => {
+    accessToken = null;
+    userEmail = null;
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_email');
+    updateUI();
+  });
+
+  // Check if user is subscribed (calls backend)
+  async function checkSubscription() {
+    if (!accessToken) return;
+    try {
+      const res = await fetch(`${apiBase}/subscription-status`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        isSubscribed = data.is_subscribed;
+        if (!isSubscribed) {
+          alert('Please subscribe to enable full access.');
+        }
+      }
+    } catch (e) {
+      console.error('Failed to check subscription status', e);
+    }
+  }
+
+  // PayPal subscription button render
+  function renderPayPalButton() {
+    if (document.getElementById('paypal-button-container').children.length > 0) return; // prevent double render
+
     paypal.Buttons({
       style: {
-        shape: 'pill',
+        shape: 'rect',
         color: 'gold',
         layout: 'vertical',
         label: 'subscribe'
       },
       createSubscription: function(data, actions) {
         return actions.subscription.create({
-          plan_id: 'P-8DP70117TD556851YNA33XXA'
+          plan_id: 'YOUR_PAYPAL_PLAN_ID' // <-- replace with your PayPal Plan ID
         });
       },
-      onApprove: function(data, actions) {
-        alert('Subscription complete! ID: ' + data.subscriptionID);
-        // Optionally send subscription ID to backend
-        fetch('https://ai-studio-backend.onrender.com/api/subscribe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ subscriptionID: data.subscriptionID })
-        });
+      onApprove: async function(data, actions) {
+        alert('Subscription successful! ID: ' + data.subscriptionID);
+        // Notify backend to activate subscription for the user
+        try {
+          const res = await fetch(`${apiBase}/subscribe`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({ subscription_id: data.subscriptionID })
+          });
+          if (res.ok) {
+            isSubscribed = true;
+            alert('Subscription activated. You can now generate videos!');
+            updateUI();
+          } else {
+            alert('Subscription activation failed on backend.');
+          }
+        } catch (e) {
+          alert('Error activating subscription.');
+        }
       }
     }).render('#paypal-button-container');
-  </script>
+  }
 
-  <!-- Optional: Login/Signup handlers -->
-  <script>
-    function showSignup() {
-      window.location.href = '/signup.html'; // adjust if needed
+  // AI Video Generation
+  generateBtn.addEventListener('click', async () => {
+    if (!accessToken) {
+      alert('Please log in and subscribe first.');
+      return;
     }
-    function showLogin() {
-      window.location.href = '/login.html'; // adjust if needed
+    if (!isSubscribed) {
+      alert('Please subscribe to generate videos.');
+      return;
     }
-  </script>
+    const prompt = promptInput.value.trim();
+    if (!prompt) {
+      alert('Please enter a video idea or prompt.');
+      return;
+    }
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
+
+    resultsDiv.innerHTML = '';
+
+    try {
+      const res = await fetch(`${apiBase}/generate-video`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const { video_url, music_url, hashtags } = data;
+
+        // Show video player
+        const videoEl = document.createElement('video');
+        videoEl.src = video_url;
+        videoEl.controls = true;
+        videoEl.autoplay = false;
+        videoEl.style.width = '100%';
+
+        // Show music link (optional)
+        const musicEl = document.createElement('p');
+        musicEl.innerHTML = `<strong>Background Music:</strong> <a href="${music_url}" target="_blank" style="color:#00ffe7;">Listen here</a>`;
+
+        // Show hashtags
+        const hashtagsEl = document.createElement('p');
+        hashtagsEl.id = 'hashtags';
+        hashtagsEl.textContent = 'Hashtags: ' + hashtags.join(' ');
+
+        resultsDiv.appendChild(videoEl);
+        resultsDiv.appendChild(musicEl);
+        resultsDiv.appendChild(hashtagsEl);
+      } else {
+        alert(data.error || 'Video generation failed.');
+      }
+    } catch (e) {
+      alert('Error generating video. Try again later.');
+    }
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate Viral Video';
+  });
+
+  // On load, update UI based on login state
+  updateUI();
+
+  // Close modal if user clicks outside modal content
+  window.onclick = function(event) {
+    if (event.target === loginModal) hideModal(loginModal);
+    if (event.target === signupModal) hideModal(signupModal);
+  };
+</script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
