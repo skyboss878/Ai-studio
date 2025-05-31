@@ -4,5 +4,8 @@ Flask-JWT-Extended
 Flask-SQLAlchemy
 gunicorn
 openai
-python-dotenv
 requests
+moviepy
+pytube
+python-dotenv
+yt_dlp

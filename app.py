@@ -6,6 +6,10 @@ import datetime
 import os
 import openai
 from dotenv import load_dotenv
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # This loads the .env file
 
 # Load environment variables from .env file
 load_dotenv()
