@@ -1,71 +1,119 @@
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Creators Studio</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="static/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0e0e0e;
+      color: #fff;
+    }
+
+    nav {
+      background: #1a1a1a;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffe7;
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .cta-button {
+      background: #00ffe7;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 1rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #ccc;
+    }
+
+    .primary-cta {
+      padding: 1rem 2rem;
+      background: #00ffe7;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    #pricing {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #1a1a1a;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
   <nav>
-    <div class="nav-content">
-      <a href="#" class="logo">AI Creators Studio</a>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#" onclick="showLogin()">Login</a>
-      </div>
+    <a href="#" class="logo">AI Creators Studio</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" onclick="showLogin()">Login</a>
       <a href="#" class="cta-button" onclick="showSignup()">Start Free</a>
     </div>
   </nav>
 
   <section class="hero">
     <h1>Go Viral Instantly with AI</h1>
-    <p>AI-generated videos, music, and captions for TikTok, Reels, Shorts</p>
-    <div class="hero-buttons">
-      <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
-    </div>
-  </section>
-
-  <!-- Signup Form -->
-  <section id="signup-form" style="display:none;">
-    <h2>Sign Up</h2>
-    <input type="email" id="signup-email" placeholder="Email" />
-    <input type="password" id="signup-password" placeholder="Password" />
-    <button onclick="signupUser()">Sign Up</button>
-  </section>
-
-  <!-- Login Form -->
-  <section id="login-form" style="display:none;">
-    <h2>Login</h2>
-    <input type="email" id="login-email" placeholder="Email" />
-    <input type="password" id="login-password" placeholder="Password" />
-    <button onclick="loginUser()">Login</button>
+    <p>Create viral short videos, captions, and music for TikTok, Reels, and Shorts — automatically</p>
+    <a href="#" class="primary-cta" onclick="showSignup()">Start Free Trial</a>
   </section>
 
   <section id="pricing">
-    <h2>Subscription</h2>
+    <h2>Subscribe for Full Access</h2>
     <div id="paypal-button-container"></div>
   </section>
 
-  <!-- PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+  <footer>
+    &copy; 2025 AI Creators Studio
+  </footer>
+
+  <!-- PayPal Integration -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AQgoEsXMSG92HCurAfIz9VB6FklPn_EzCkXn0S04kzzinjRZiGrLctBv7PXGL3Gxt2DKmdp1h6a_1lDZ&vault=true&intent=subscription"></script>
   <script>
     paypal.Buttons({
       style: {
-        shape: 'rect',
+        shape: 'pill',
         color: 'gold',
         layout: 'vertical',
         label: 'subscribe'
@@ -76,65 +124,51 @@
         });
       },
       onApprove: function(data, actions) {
-        alert('You subscribed! ID: ' + data.subscriptionID);
+        alert('Subscription complete! ID: ' + data.subscriptionID);
+        // Optionally send subscription ID to backend
+        fetch('https://ai-studio-backend.onrender.com/api/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ subscriptionID: data.subscriptionID })
+        });
       }
     }).render('#paypal-button-container');
   </script>
 
-  <!-- Signup/Login Script -->
+  <!-- Optional: Login/Signup handlers -->
   <script>
     function showSignup() {
-      document.getElementById("signup-form").style.display = "block";
-      document.getElementById("login-form").style.display = "none";
+      window.location.href = '/signup.html'; // adjust if needed
     }
-
     function showLogin() {
-      document.getElementById("login-form").style.display = "block";
-      document.getElementById("signup-form").style.display = "none";
-    }
-
-    function signupUser() {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-
-      alert("Sending signup request...");
-
-      fetch("https://ai-studio-backend.onrender.com/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert("Signup success: " + JSON.stringify(data));
-      })
-      .catch(error => {
-        alert("Signup failed: " + error);
-      });
-    }
-
-    function loginUser() {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-
-      alert("Sending login request...");
-
-      fetch("https://ai-studio-backend.onrender.com/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert("Login success: " + JSON.stringify(data));
-      })
-      .catch(error => {
-        alert("Login failed: " + error);
-      });
+      window.location.href = '/login.html'; // adjust if needed
     }
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
